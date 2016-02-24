@@ -1,0 +1,127 @@
+# NAME: computecanada.schema
+#
+# DESCRIPTION: Compute Canada LDAP schema
+#
+# Version: 0.10
+#
+# AUTHOR: Lixin Liu <liu@computecanada.ca>
+#
+# Compute Canada PEN: 47174
+#
+# OID assignment:
+#	1.3.6.1.4.1.47174.1		Compute Canada
+#	1.3.6.1.4.1.47174.1.1		Directory Service (LDAP)
+#	1.3.6.1.4.1.47174.1.1.1		Attribute Types
+#	1.3.6.1.4.1.47174.1.1.1.1	cci
+#	1.3.6.1.4.1.47174.1.1.1.2	ccri
+#	1.3.6.1.4.1.47174.1.1.1.3	ccriPrimary
+#	1.3.6.1.4.1.47174.1.1.1.4	ccStatus
+#	1.3.6.1.4.1.47174.1.1.1.5	ccStatusUpdateTime
+#	1.3.6.1.4.1.47174.1.1.1.6	ccCertSubject
+#	1.3.6.1.4.1.47174.1.1.1.7	gcCertSubject
+#	1.3.6.1.4.1.47174.1.1.1.8	ccServiceAccess
+#	1.3.6.1.4.1.47174.1.1.1.9	rapi
+#	1.3.6.1.4.1.47174.1.1.1.10	rapiType
+#	1.3.6.1.4.1.47174.1.1.1.11	ccResource
+#	1.3.6.1.4.1.47174.1.1.2		Object Classes
+#	1.3.6.1.4.1.47174.1.1.2.1	ComputeCanadaPerson
+#	1.3.6.1.4.1.47174.1.1.2.2	ComputeCanadaAccount
+#	1.3.6.1.4.1.47174.1.1.2.3	ccAllocation
+#	1.3.6.1.4.1.47174.1.1.2.4	ccAtlasAccount
+#
+# HISTORY:
+#
+# V0.10 February 23, 2016
+#	- Initial version
+#
+
+# Attribute Types
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.1 NAME 'cci'
+	DESC 'Compute Canada Identity'
+	EQUALITY caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.2 NAME 'ccri'
+	DESC 'Active Compute Canada Role Identity'
+	EQUALITY caseExactIA5Match
+	SUBSTR caseExactIA5SubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.3 NAME 'ccriPrimary'
+	DESC 'Active Compute Canada Role Identity'
+	EQUALITY caseExactIA5Match
+	SUBSTR caseExactIA5SubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.4 NAME 'ccStatus'
+	DESC 'Account status'
+	EQUALITY caseIgnoreIA5Match
+	SUBSTR caseIgnoreIA5SubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.5 NAME 'ccStatusUpdateTime'
+	DESC 'CC status last update time'
+        EQUALITY generalizedTimeMatch
+        ORDERING generalizedTimeOrderingMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.6 NAME 'ccCertSubject'
+	DESC 'Subject of the certificate issued by Compute Canada CA'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.7 NAME 'gcCertSubject'
+	DESC 'Subject of the certificate issued by Grid Canada CA'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.8 NAME 'ccServiceAccess'
+	DESC 'A CC Service name which an entry can access'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.9 NAME 'rapi'
+	DESC 'Resource allocation project ID'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'rapiType'
+	DESC 'Resource allocation project type: default, secondary or rac'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.11 NAME 'ccResource'
+	DESC 'Resource name, type and size in allocation'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+
+# Object Classes
+objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ComputeCanadaPerson'
+	DESC 'Attributes for Compute Canada users'
+	SUP top AUXILIARY
+	MUST cci
+	MAY ( ccri ) )
+
+objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ComputeCanadaAccount'
+	DESC 'Attributes for Compute Canada accounts'
+	SUP top AUXILIARY
+	MAY ( ccri $ ccriPrimary $ ccCertSubject $ gcCertSubject $
+	      ccStatus $ ccServiceAccess $ ccStatusUpdateTime ) )
+
+objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
+	DESC 'Attributes for CC resource allocation projects'
+	SUP top STRUCTURAL
+	MUST rapi
+	MAY ( ccri $ rapiType $ ccResource ) )
+
+objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccAtlasAccount'
+	DESC 'Additional attributes for atlas accounts'
+	SUP top AUXILIARY
+	MAY ( rapi $ ccCertSubject $ gcCertSubject $ ccStatus $
+	      ccServiceAccess $ ccStatusUpdateTime ) )
