@@ -10,7 +10,7 @@
 #
 # OID assignment:
 #	1.3.6.1.4.1.47174.1		Compute Canada (cc)
-#	1.3.6.1.4.1.47174.1.1		Directory Service (LDAP)
+#	1.3.6.1.4.1.47174.1.1		Directory Service (ccLDAP)
 #	1.3.6.1.4.1.47174.1.1.1		Attribute Types
 #	1.3.6.1.4.1.47174.1.1.1.1	cci
 #	1.3.6.1.4.1.47174.1.1.1.2	ccri
@@ -37,12 +37,12 @@
 # V0.30 March 5, 2016
 #	- Change ComputeCanadaPerson and ComputeCanadaAccount to ccPerson
 #	  and ccAccount
-#	- Add ccAccountType attributetype
+#	- Add ccAccountType attribute
 #	- Change ccAtlasAccount to ccServiceAccount objectclass
 #	- Use ccAccountType to specify account usage, like OpenStack, Atlas
 #	- Change rapi, ccCertSubject and gcCertSubject to IA5 string type
-#	- Chage cci from MUST to May have attribute in ComputeCanadaPerson
-#	  as we cureently use the employeeNumber to store CCI.
+#	- Change cci from MUST to May have attribute in ccPerson as we
+#	  cureently use the employeeNumber to store CCI.
 #
 # V0.21 February 26, 2016
 #	- Replace ccri in ccAllocation with rapMember
@@ -110,13 +110,13 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.9 NAME 'rapi'
 	DESC 'Resource allocation project ID'
 	EQUALITY caseIgnoreIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
-	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'rapiType'
 	DESC 'Resource allocation project type: default, secondary or rac'
 	EQUALITY caseIgnoreIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
-	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.11 NAME 'ccResource'
 	DESC 'Resource name, type and size in allocation'
@@ -145,8 +145,8 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 	DESC 'Attributes for Compute Canada accounts'
 	SUP top AUXILIARY
-	MUST ( ccStatus $ ccStatusUpdateTime )
-	MAY ( ccri $ ccriPrimary $ ccCertSubject $ gcCertSubject $ ccServiceAccess) )
+	MAY ( ccStatus $ ccStatusUpdateTime $ ccri $ ccriPrimary
+	    $ ccCertSubject $ gcCertSubject $ ccServiceAccess) )
 
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	DESC 'Attributes for CC resource allocation projects'
@@ -154,9 +154,19 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	MUST ( rapi $ rapiType )
 	MAY ( rapMember $ ccResource ) )
 
-# Atlas accounts use only RAC RAPI wich matches its CCRI
+# Service accounts may or may not need RAPI depending ccAccountType.
+# Some examples are:
+# atlas: use only RAC RAPI wich matches its CCRI;
+# snoplus: share dteam, ops and opsgm with altas, but uses different
+#	   accounting group; also shows an account may blongs to more
+#	   than one type;
+# openstack: OpenStack service accounts do not need RAPI;
+# canfar: use only RAC RAPI wich matches its CCRI;
+# shared: shared accounts allow multiple users login to one account
+#	  using certificates (avoid sharing the password);
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccServiceAccount'
-	DESC 'Additional attributes for atlas accounts'
+	DESC 'Compute Canada service and project accounts'
 	SUP top AUXILIARY
-	MUST ( ccStatus $ ccStatusUpdateTime $ ccAccountType )
-	MAY ( ccri $ ccServiceAccess ) )
+	MAY ( ccStatus $ ccStatusUpdateTime $ ccAccountType $ ccri
+	    $ ccriPrimary $ ccCertSubject $ gcCertSubject 
+	    $ ccServiceAccess) )
