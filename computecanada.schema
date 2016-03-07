@@ -36,6 +36,7 @@
 #
 # V0.31 March 7, 2016
 #	- rapi is case sensitve, should be lower case like cci and ccri
+#	- minor comment changes
 #
 # V0.30 March 5, 2016
 #	- Change ComputeCanadaPerson and ComputeCanadaAccount to ccPerson
@@ -104,7 +105,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.7 NAME 'gcCertSubject'
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} )
 
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.8 NAME 'ccServiceAccess'
-	DESC 'A CC Service name which an account have access'
+	DESC 'A CC Service name which an account have access to'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
@@ -122,7 +123,10 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'rapiType'
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.11 NAME 'ccResource'
-	DESC 'Resource name, type and size in allocation'
+	DESC 'Resource allocation info: name:type:size
+	  name: CC resource name
+	  type: CC resource type: cpu, gpu, storage
+	  size: Allocation number in coreyear or GB'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
