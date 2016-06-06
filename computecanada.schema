@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.31
+# Version: 0.40
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -25,6 +25,7 @@
 #	1.3.6.1.4.1.47174.1.1.1.11	ccResource
 #	1.3.6.1.4.1.47174.1.1.1.12	rapMember
 # 	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
+# 	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
 #
 #	1.3.6.1.4.1.47174.1.1.2		Object Classes
 #	1.3.6.1.4.1.47174.1.1.2.1	ccPerson
@@ -33,6 +34,10 @@
 #	1.3.6.1.4.1.47174.1.1.2.4	ccServiceAccount
 #
 # HISTORY:
+#
+# V0.40 June 6, 2016
+#	- Add ccPrimaryEmail attribute as requested by CC OTRS
+#	- Add ccPrimaryEmail to ccAccount objectclass
 #
 # V0.31 March 7, 2016
 #	- rapi is case sensitve, should be lower case like cci and ccri
@@ -143,6 +148,12 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.13 NAME 'ccAccountType'
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
 
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.14 NAME 'ccPrimaryEmail'
+        DESC 'Primary Email Address of Compute Canada users'
+        EQUALITY caseIgnoreIA5Match
+        SUBSTR caseIgnoreIA5SubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{128} )
+
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
 	DESC 'Attributes for Compute Canada users'
@@ -153,7 +164,8 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 	DESC 'Attributes for Compute Canada accounts'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccri $ ccriPrimary
-	    $ ccCertSubject $ gcCertSubject $ ccServiceAccess) )
+	    $ ccCertSubject $ gcCertSubject $ ccServiceAccess
+	    $ ccPrimaryEmail ) )
 
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	DESC 'Attributes for CC resource allocation projects'
