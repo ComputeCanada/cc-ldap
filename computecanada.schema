@@ -152,7 +152,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.14 NAME 'ccPrimaryEmail'
         DESC 'Primary Email Address of Compute Canada users'
         EQUALITY caseIgnoreIA5Match
         SUBSTR caseIgnoreIA5SubstringsMatch
-        SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{128} )
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} )
 
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
