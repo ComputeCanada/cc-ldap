@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.40
+# Version: 0.41
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -34,6 +34,9 @@
 #	1.3.6.1.4.1.47174.1.1.2.4	ccServiceAccount
 #
 # HISTORY:
+#
+# V0.41 June 16, 2016
+#	- ccPrimaryEmail must be defined in ccPerson
 #
 # V0.40 June 6, 2016
 #	- Add ccPrimaryEmail attribute as requested by CC OTRS
@@ -158,6 +161,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.14 NAME 'ccPrimaryEmail'
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
 	DESC 'Attributes for Compute Canada users'
 	SUP top AUXILIARY
+	MUST ( ccPrimaryEmail )
 	MAY ( cci ) )
 
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
