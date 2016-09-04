@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.41
+# Version: 0.50
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -31,9 +31,14 @@
 #	1.3.6.1.4.1.47174.1.1.2.1	ccPerson
 #	1.3.6.1.4.1.47174.1.1.2.2	ccAccount
 #	1.3.6.1.4.1.47174.1.1.2.3	ccAllocation
-#	1.3.6.1.4.1.47174.1.1.2.4	ccServiceAccount
+#	1.3.6.1.4.1.47174.1.1.2.4	ccProjectAccount
 #
 # HISTORY:
+#
+# V0.50 September 4, 2016
+#	- rename ccServiceAccount to ccProjectAccount
+#	- all ccPrimaryEmail to be added
+#	- 
 #
 # V0.41 June 16, 2016
 #	- ccPrimaryEmail must be defined in ccPerson
@@ -177,19 +182,19 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	MUST ( rapi $ rapiType )
 	MAY ( rapMember $ ccResource ) )
 
-# Service accounts may or may not need RAPI depending ccAccountType.
+# Project accounts may or may not need RAPI depending ccAccountType.
 # Some examples are:
 # atlas: use only RAC RAPI wich matches its CCRI;
 # snoplus: share dteam, ops and opsgm with altas, but uses different
-#	   accounting group; also shows an account may blongs to more
-#	   than one type;
+#	   accounting group;
 # openstack: OpenStack service accounts do not need RAPI;
 # canfar: use only RAC RAPI wich matches its CCRI;
 # shared: shared accounts allow multiple users login to one account
 #	  using certificates (avoid sharing the password);
-objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccServiceAccount'
+# portal: RPP portal account to run web services;
+objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccProjectAccount'
 	DESC 'Compute Canada service and project accounts'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccAccountType $ ccri
 	    $ ccriPrimary $ ccCertSubject $ gcCertSubject 
-	    $ ccServiceAccess) )
+	    $ ccServiceAccess $ ccPrimaryEmail) )
