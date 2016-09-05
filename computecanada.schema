@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.50
+# Version: 0.51
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -26,6 +26,7 @@
 #	1.3.6.1.4.1.47174.1.1.1.12	ccRapMember
 # 	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
 # 	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
+#	1.3.6.1.4.1.47174.1.1.1.15	ccSupportAgreement
 #
 #	1.3.6.1.4.1.47174.1.1.2		Object Classes
 #	1.3.6.1.4.1.47174.1.1.2.1	ccPerson
@@ -34,6 +35,9 @@
 #	1.3.6.1.4.1.47174.1.1.2.4	ccProjectAccount
 #
 # HISTORY:
+#
+# V0.51 September 5, 2-16
+#	- add ccSupportAgreement
 #
 # V0.50 September 4, 2016
 #	- rename ccServiceAccount to ccProjectAccount
@@ -164,6 +168,12 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.14 NAME 'ccPrimaryEmail'
         SUBSTR caseIgnoreIA5SubstringsMatch
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} )
 
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.15 NAME 'ccSupportAgreement'
+        DESC 'Compute Canada users support agreement'
+        EQUALITY caseIgnoreMatch
+        SUBSTR caseIgnoreSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
 	DESC 'Attributes for Compute Canada users'
@@ -176,7 +186,7 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccri $ ccriPrimary
 	    $ ccCertSubject $ gcCertSubject $ ccServiceAccess
-	    $ ccPrimaryEmail ) )
+	    $ ccPrimaryEmail $ ccSupportAgreement ) )
 
 # ccAllocation contains allocations (RAC and non-RAC) including
 # resources and members.
@@ -204,4 +214,4 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccProjectAccount'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccAccountType $ ccri
 	    $ ccriPrimary $ ccCertSubject $ gcCertSubject 
-	    $ ccServiceAccess $ ccPrimaryEmail) )
+	    $ ccServiceAccess $ ccPrimaryEmail $ ccSupportAgreement ) )
