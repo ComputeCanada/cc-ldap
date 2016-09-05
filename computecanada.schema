@@ -180,6 +180,7 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 
 # ccAllocation contains allocations (RAC and non-RAC) including
 # resources and members.
+# ccRapType can be either RAS or RAC
 # ccResouce: resource_name:resource_type:resource_value
 # rapMember: UIDs of RAP member, can be UID of users or projects
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
