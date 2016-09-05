@@ -20,10 +20,10 @@
 #	1.3.6.1.4.1.47174.1.1.1.6	ccCertSubject
 #	1.3.6.1.4.1.47174.1.1.1.7	gcCertSubject
 #	1.3.6.1.4.1.47174.1.1.1.8	ccServiceAccess
-#	1.3.6.1.4.1.47174.1.1.1.9	rapi
-#	1.3.6.1.4.1.47174.1.1.1.10	rapiType
+#	1.3.6.1.4.1.47174.1.1.1.9	ccRapi
+#	1.3.6.1.4.1.47174.1.1.1.10	ccRapType
 #	1.3.6.1.4.1.47174.1.1.1.11	ccResource
-#	1.3.6.1.4.1.47174.1.1.1.12	rapMember
+#	1.3.6.1.4.1.47174.1.1.1.12	ccRapMember
 # 	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
 # 	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
 #
@@ -37,8 +37,10 @@
 #
 # V0.50 September 4, 2016
 #	- rename ccServiceAccount to ccProjectAccount
-#	- all ccPrimaryEmail to be added
-#	- 
+#	- add ccPrimaryEmail attribute
+#	- rename rapi to ccRapi
+#	- rename rapiType to ccRapType
+#	- rename RapMember to ccRapMember
 #
 # V0.41 June 16, 2016
 #	- ccPrimaryEmail must be defined in ccPerson
@@ -123,13 +125,13 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.8 NAME 'ccServiceAccess'
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
 
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.9 NAME 'rapi'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.9 NAME 'ccRapi'
 	DESC 'Resource allocation project ID'
 	EQUALITY caseExactIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'rapiType'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'ccRapType'
 	DESC 'Resource allocation type: default, secondary or rac'
 	EQUALITY caseIgnoreIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
@@ -144,7 +146,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.11 NAME 'ccResource'
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
 
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.12 NAME 'rapMember'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.12 NAME 'ccRapMember'
 	DESC 'RAP members: use CCRI value for rapMember'
 	EQUALITY caseExactIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
@@ -176,11 +178,15 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 	    $ ccCertSubject $ gcCertSubject $ ccServiceAccess
 	    $ ccPrimaryEmail ) )
 
+# ccAllocation contains allocations (RAC and non-RAC) including
+# resources and members.
+# ccResouce: resource_name:resource_type:resource_value
+# rapMember: UIDs of RAP member, can be UID of users or projects
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	DESC 'Attributes for CC resource allocation projects'
 	SUP top STRUCTURAL
-	MUST ( rapi $ rapiType )
-	MAY ( rapMember $ ccResource ) )
+	MUST ( ccRapi $ ccRapType )
+	MAY ( ccRapMember $ ccResource ) )
 
 # Project accounts may or may not need RAPI depending ccAccountType.
 # Some examples are:
