@@ -27,6 +27,7 @@
 # 	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
 # 	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
 #	1.3.6.1.4.1.47174.1.1.1.15	ccSupportAgreement
+#	1.3.6.1.4.1.47174.1.1.1.16	ccProjectAccountManager
 #
 #	1.3.6.1.4.1.47174.1.1.2		Object Classes
 #	1.3.6.1.4.1.47174.1.1.2.1	ccPerson
@@ -35,6 +36,10 @@
 #	1.3.6.1.4.1.47174.1.1.2.4	ccProjectAccount
 #
 # HISTORY:
+#
+# V0.52 December 5, 2016
+#	- add ccProjectAccountManager attribute
+#	- update ccProjectAccount objectclass
 #
 # V0.51 September 5, 2016
 #	- add ccSupportAgreement
@@ -173,6 +178,11 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.15 NAME 'ccSupportAgreement'
         EQUALITY caseIgnoreMatch
         SUBSTR caseIgnoreSubstringsMatch
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+	
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.16 NAME 'ccProjectAccountManager'
+	DESC 'Project account manager cci'
+	EQUALITY caseExactIA5Match
+SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
 
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
@@ -190,9 +200,9 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 
 # ccAllocation contains allocations (RAC and non-RAC) including
 # resources and members.
-# ccRapType can be either RAS or RAC
+# ccRapType can be RAS, RRG or RPP
 # ccResouce: resource_name:resource_type:resource_value
-# rapMember: UIDs of RAP member, can be UID of users or projects
+# rapMember: UIDs of allocation member, can be UID of users or projects
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	DESC 'Attributes for CC resource allocation projects'
 	SUP top STRUCTURAL
@@ -201,7 +211,7 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 
 # Project accounts may or may not need RAPI depending ccAccountType.
 # Some examples are:
-# atlas: use only RAC RAPI wich matches its CCRI;
+# atlas: use only allocation RAPI wich matches its CCRI;
 # snoplus: share dteam, ops and opsgm with altas, but uses different
 #	   accounting group;
 # openstack: OpenStack service accounts do not need RAPI;
@@ -213,5 +223,6 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccProjectAccount'
 	DESC 'Compute Canada service and project accounts'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccAccountType $ ccri
-	    $ ccriPrimary $ ccCertSubject $ gcCertSubject 
-	    $ ccServiceAccess $ ccPrimaryEmail $ ccSupportAgreement ) )
+	    $ ccProjectAccountManager $ ccriPrimary $ ccCertSubject
+	    $ gcCertSubject $ ccServiceAccess $ ccPrimaryEmail
+	    $ ccSupportAgreement ) )
