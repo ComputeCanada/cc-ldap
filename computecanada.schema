@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.52
+# Version: 0.60
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -27,7 +27,7 @@
 # 	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
 # 	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
 #	1.3.6.1.4.1.47174.1.1.1.15	ccSupportAgreement
-#	1.3.6.1.4.1.47174.1.1.1.16	ccProjectAccountManager
+#	1.3.6.1.4.1.47174.1.1.1.16	ccAccountManager
 #
 #	1.3.6.1.4.1.47174.1.1.2		Object Classes
 #	1.3.6.1.4.1.47174.1.1.2.1	ccPerson
@@ -36,6 +36,12 @@
 #	1.3.6.1.4.1.47174.1.1.2.4	ccProjectAccount
 #
 # HISTORY:
+#
+# V0.60 December 10, 2016
+#	- change ccProjectAccountManager to ccAccountManager
+#	  we can reuse this attribute to other objectclasses
+#	- ccAllocation can have a manager (use ccAccountManager)
+#	- add SUBSTR in cci and ccAccountManager
 #
 # V0.52 December 5, 2016
 #	- add ccProjectAccountManager attribute
@@ -90,6 +96,7 @@
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.1 NAME 'cci'
 	DESC 'Compute Canada Identity'
 	EQUALITY caseExactIA5Match
+	SUBSTR caseExactIA5SubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.2 NAME 'ccri'
@@ -179,9 +186,10 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.15 NAME 'ccSupportAgreement'
         SUBSTR caseIgnoreSubstringsMatch
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
 	
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.16 NAME 'ccProjectAccountManager'
-	DESC 'Project account manager cci'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.16 NAME 'ccAccountManager'
+	DESC 'Manager cci for some CC objectclasses'
 	EQUALITY caseExactIA5Match
+	SUBSTR caseExactIA5SubstringsMatch
 SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
 
 # Object Classes
@@ -207,7 +215,7 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	DESC 'Attributes for CC resource allocation projects'
 	SUP top STRUCTURAL
 	MUST ( ccRapi $ ccRapType )
-	MAY ( ccRapMember $ ccResource ) )
+	MAY ( ccRapMember $ ccResource & ccAccountManager ) )
 
 # Project accounts may or may not need RAPI depending ccAccountType.
 # Some examples are:
