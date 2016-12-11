@@ -231,6 +231,6 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccProjectAccount'
 	DESC 'Compute Canada service and project accounts'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccAccountType $ ccri
-	    $ ccProjectAccountManager $ ccriPrimary $ ccCertSubject
+	    $ ccAccountManager $ ccriPrimary $ ccCertSubject
 	    $ gcCertSubject $ ccServiceAccess $ ccPrimaryEmail
 	    $ ccSupportAgreement ) )
