@@ -212,7 +212,7 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 # ccResouce: resource_name:resource_type:resource_value
 # rapMember: UIDs of allocation member, can be UID of users or projects
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
-	DESC 'Attributes for CC resource allocation projects'
+	DESC 'CC resource allocation objectclass'
 	SUP top STRUCTURAL
 	MUST ( ccRapi $ ccRapType )
 	MAY ( ccRapMember $ ccResource & ccAccountManager ) )
