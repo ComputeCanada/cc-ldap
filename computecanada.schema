@@ -190,7 +190,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.16 NAME 'ccAccountManager'
 	DESC 'Manager cci for some CC objectclasses'
 	EQUALITY caseExactIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
-SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
 
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
@@ -215,7 +215,7 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
 	DESC 'CC resource allocation objectclass'
 	SUP top STRUCTURAL
 	MUST ( ccRapi $ ccRapType )
-	MAY ( ccRapMember $ ccResource & ccAccountManager ) )
+	MAY ( ccRapMember $ ccResource $ ccAccountManager ) )
 
 # Project accounts may or may not need RAPI depending ccAccountType.
 # Some examples are:
