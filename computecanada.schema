@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.61
+# Version: 0.62
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -37,6 +37,9 @@
 #	1.3.6.1.4.1.47174.1.1.2.4	ccProjectAccount
 #
 # HISTORY:
+#
+# V0.62 January 13, 2017
+#	- allow multiple ccSshPublicKey
 #
 # V0.61 January 13, 2017
 #	- add ccSshPublicKey as number of people requested
@@ -201,7 +204,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.16 NAME 'ccAccountManager'
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.17 NAME 'ccSshPublicKey'
 	DESC 'SSH public key'
 	EQUALITY octetStringMatch
-	SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 SINGLE-VALUE )
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )
 
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
