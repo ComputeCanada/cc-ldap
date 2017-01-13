@@ -2,7 +2,7 @@
 #
 # DESCRIPTION: Compute Canada LDAP schema
 #
-# Version: 0.41
+# Version: 0.61
 #
 # AUTHOR: Lixin Liu <liu@computecanada.ca>
 #
@@ -20,20 +20,48 @@
 #	1.3.6.1.4.1.47174.1.1.1.6	ccCertSubject
 #	1.3.6.1.4.1.47174.1.1.1.7	gcCertSubject
 #	1.3.6.1.4.1.47174.1.1.1.8	ccServiceAccess
-#	1.3.6.1.4.1.47174.1.1.1.9	rapi
-#	1.3.6.1.4.1.47174.1.1.1.10	rapiType
+#	1.3.6.1.4.1.47174.1.1.1.9	ccRapi
+#	1.3.6.1.4.1.47174.1.1.1.10	ccRapType
 #	1.3.6.1.4.1.47174.1.1.1.11	ccResource
-#	1.3.6.1.4.1.47174.1.1.1.12	rapMember
-# 	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
-# 	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
+#	1.3.6.1.4.1.47174.1.1.1.12	ccRapMember
+#	1.3.6.1.4.1.47174.1.1.1.13	ccAccountType
+#	1.3.6.1.4.1.47174.1.1.1.14	ccPrimaryEmail
+#	1.3.6.1.4.1.47174.1.1.1.15	ccSupportAgreement
+#	1.3.6.1.4.1.47174.1.1.1.16	ccAccountManager
+#	1.3.6.1.4.1.47174.1.1.1.17	ccSshPublicKey
 #
 #	1.3.6.1.4.1.47174.1.1.2		Object Classes
 #	1.3.6.1.4.1.47174.1.1.2.1	ccPerson
 #	1.3.6.1.4.1.47174.1.1.2.2	ccAccount
 #	1.3.6.1.4.1.47174.1.1.2.3	ccAllocation
-#	1.3.6.1.4.1.47174.1.1.2.4	ccServiceAccount
+#	1.3.6.1.4.1.47174.1.1.2.4	ccProjectAccount
 #
 # HISTORY:
+#
+# V0.61 January 13, 2017
+#	- add ccSshPublicKey as number of people requested
+#	- ccAccount and ccProjectAccount can have ccSshPublicKey
+#	- ccPrimaryEmail should be SINGLE-VALUE
+#
+# V0.60 December 10, 2016
+#	- change ccProjectAccountManager to ccAccountManager
+#	  we can reuse this attribute to other objectclasses
+#	- ccAllocation can have a manager (use ccAccountManager)
+#	- add SUBSTR in cci and ccAccountManager
+#
+# V0.52 December 5, 2016
+#	- add ccProjectAccountManager attribute
+#	- update ccProjectAccount objectclass
+#
+# V0.51 September 5, 2016
+#	- add ccSupportAgreement
+#
+# V0.50 September 4, 2016
+#	- rename ccServiceAccount to ccProjectAccount
+#	- add ccPrimaryEmail attribute
+#	- rename rapi to ccRapi
+#	- rename rapiType to ccRapType
+#	- rename RapMember to ccRapMember
 #
 # V0.41 June 16, 2016
 #	- ccPrimaryEmail must be defined in ccPerson
@@ -74,6 +102,7 @@
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.1 NAME 'cci'
 	DESC 'Compute Canada Identity'
 	EQUALITY caseExactIA5Match
+	SUBSTR caseExactIA5SubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
 attributetype ( 1.3.6.1.4.1.47174.1.1.1.2 NAME 'ccri'
@@ -118,13 +147,13 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.8 NAME 'ccServiceAccess'
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
 
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.9 NAME 'rapi'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.9 NAME 'ccRapi'
 	DESC 'Resource allocation project ID'
 	EQUALITY caseExactIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} SINGLE-VALUE )
 
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'rapiType'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.10 NAME 'ccRapType'
 	DESC 'Resource allocation type: default, secondary or rac'
 	EQUALITY caseIgnoreIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
@@ -139,7 +168,7 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.11 NAME 'ccResource'
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
 
-attributetype ( 1.3.6.1.4.1.47174.1.1.1.12 NAME 'rapMember'
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.12 NAME 'ccRapMember'
 	DESC 'RAP members: use CCRI value for rapMember'
 	EQUALITY caseExactIA5Match
 	SUBSTR caseExactIA5SubstringsMatch
@@ -155,7 +184,24 @@ attributetype ( 1.3.6.1.4.1.47174.1.1.1.14 NAME 'ccPrimaryEmail'
         DESC 'Primary Email Address of Compute Canada users'
         EQUALITY caseIgnoreIA5Match
         SUBSTR caseIgnoreIA5SubstringsMatch
-        SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} )
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.15 NAME 'ccSupportAgreement'
+        DESC 'Compute Canada users support agreement'
+        EQUALITY caseIgnoreMatch
+        SUBSTR caseIgnoreSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+	
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.16 NAME 'ccAccountManager'
+	DESC 'Manager cci for some CC objectclasses'
+	EQUALITY caseExactIA5Match
+	SUBSTR caseExactIA5SubstringsMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32} )
+	
+attributetype ( 1.3.6.1.4.1.47174.1.1.1.17 NAME 'ccSshPublicKey'
+	DESC 'SSH public key'
+	EQUALITY octetStringMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 SINGLE-VALUE )
 
 # Object Classes
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.1 NAME 'ccPerson'
@@ -169,27 +215,33 @@ objectclass ( 1.3.6.1.4.1.47174.1.1.2.2 NAME 'ccAccount'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccri $ ccriPrimary
 	    $ ccCertSubject $ gcCertSubject $ ccServiceAccess
-	    $ ccPrimaryEmail ) )
+	    $ ccPrimaryEmail $ ccSupportAgreement $ ccSshPublicKey ) )
 
+# ccAllocation contains allocations (RAC and non-RAC) including
+# resources and members.
+# ccRapType can be RAS, RRG or RPP
+# ccResouce: resource_name:resource_type:resource_value
+# rapMember: UIDs of allocation member, can be UID of users or projects
 objectclass ( 1.3.6.1.4.1.47174.1.1.2.3 NAME 'ccAllocation'
-	DESC 'Attributes for CC resource allocation projects'
+	DESC 'CC resource allocation objectclass'
 	SUP top STRUCTURAL
-	MUST ( rapi $ rapiType )
-	MAY ( rapMember $ ccResource ) )
+	MUST ( ccRapi $ ccRapType )
+	MAY ( ccRapMember $ ccResource $ ccAccountManager ) )
 
-# Service accounts may or may not need RAPI depending ccAccountType.
+# Project accounts may or may not need RAPI depending ccAccountType.
 # Some examples are:
-# atlas: use only RAC RAPI wich matches its CCRI;
+# atlas: use only allocation RAPI wich matches its CCRI;
 # snoplus: share dteam, ops and opsgm with altas, but uses different
-#	   accounting group; also shows an account may blongs to more
-#	   than one type;
+#	   accounting group;
 # openstack: OpenStack service accounts do not need RAPI;
 # canfar: use only RAC RAPI wich matches its CCRI;
 # shared: shared accounts allow multiple users login to one account
 #	  using certificates (avoid sharing the password);
-objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccServiceAccount'
+# portal: RPP portal account to run web services;
+objectclass ( 1.3.6.1.4.1.47174.1.1.2.4 NAME 'ccProjectAccount'
 	DESC 'Compute Canada service and project accounts'
 	SUP top AUXILIARY
 	MAY ( ccStatus $ ccStatusUpdateTime $ ccAccountType $ ccri
-	    $ ccriPrimary $ ccCertSubject $ gcCertSubject 
-	    $ ccServiceAccess) )
+	    $ ccAccountManager $ ccriPrimary $ ccCertSubject
+	    $ gcCertSubject $ ccServiceAccess $ ccPrimaryEmail
+	    $ ccSupportAgreement $ ccSshPublicKey ) )
